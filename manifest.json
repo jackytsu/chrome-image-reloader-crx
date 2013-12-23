@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "ImageReloader",
+    "version": "1.0",
+    
+    "description": "图片重载器，一个重新加载某个图片或整个页面图片的工具。",
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
+    "permissions": ["contextMenus", "tabs", "http://*/*", "https://*/*"],
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["jquery.min.js", "content.js"]
+    }],
+    "background": {
+        "scripts": ["background.js"]
+    }
+}
