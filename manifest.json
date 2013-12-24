@@ -3,6 +3,7 @@
     "name": "ImageReloader",
     "version": "1.0",
     
+    "web_accessible_resources": ["icon128.png"],
     "description": "图片重载器，一个重新加载某个图片或整个页面图片的工具。",
     "icons": {
         "16": "icon16.png",
