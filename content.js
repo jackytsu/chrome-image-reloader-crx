@@ -9,34 +9,51 @@ var getRandomNum = function() {
 };
 
 var parseUrl = function(url) {
-    if (url.indexOf('ImageReloaderRandomNum=') > -1) {
-        var temp = url.split('ImageReloaderRandomNum=');
-        url = temp[0] + 'ImageReloaderRandomNum=' + getRandomNum() + temp[1].substring(16);
-    } else if (url.indexOf('?') > -1) {
-        url += '&ImageReloaderRandomNum=' + getRandomNum();
+    var prefix = '', suffix = '';
+    if (url.search(/url\(([^\)]*)\)/img) > -1) {
+        prefix = 'url(';
+        suffix = url.replace(/url\(([^\)]*)\)/img, '$1');
     } else {
-        url += '?ImageReloaderRandomNum=' + getRandomNum();
+        suffix = url;
     }
 
-    console.log(url);
-    return url;
+    if (suffix.indexOf('ImageReloaderRandomNum=') > -1) {
+        var temp = suffix.split('ImageReloaderRandomNum=');
+        suffix = temp[0] + 'ImageReloaderRandomNum=' + getRandomNum() + temp[1].substring(16);
+    } else if (url.indexOf('?') > -1) {
+        suffix += '&ImageReloaderRandomNum=' + getRandomNum();
+    } else {
+        suffix += '?ImageReloaderRandomNum=' + getRandomNum();
+    }
+
+    console.log(prefix + suffix + (prefix.length > 0 ? ')' : ''));
+    return prefix + suffix + (prefix.length > 0 ? ')' : '');
 };
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.type == 'page') {
-        $('img').each(function() {
-            var $t = $(this), url = parseUrl($t.attr('src'));
-            $t.attr('src', chrome.extension.getURL("icon128.png"));
-            setTimeout(function() {
-                $t.attr('src', url);
-            }, 500);
+        $('*').each(function() {
+            var $t = $(this);
+            if ($t.css('backgroundImage') && $t.css('backgroundImage') != 'none') {
+                var url = parseUrl($t.css('backgroundImage'));
+                $t.css('backgroundImage', chrome.extension.getURL("icon128.png"));
+                setTimeout(function() {
+                    $t.css('backgroundImage', url);
+                }, 10);
+            } else if (this.tagName == 'img') {
+                var url = parseUrl($t.attr('src'));
+                $t.attr('src', chrome.extension.getURL("icon128.png"));
+                setTimeout(function() {
+                    $t.attr('src', url);
+                }, 10);
+            }
         });
     } else if (message.type == 'img') {
         var url = parseUrl($el.attr('src'));
         $el.attr('src', chrome.extension.getURL("icon128.png"));
         setTimeout(function() {
             $el.attr('src', url);
-        }, 500);
+        }, 10);
     }
 
     sendResponse({

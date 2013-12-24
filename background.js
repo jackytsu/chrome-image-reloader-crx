@@ -1,6 +1,6 @@
 chrome.contextMenus.create({
     "title": '重新加载所有图片',
-    "contexts": ['page'],
+    "contexts": ['all'],
     "onclick": function(info, tab) {
         chrome.tabs.sendMessage(tab.id, {
             type: "page"
