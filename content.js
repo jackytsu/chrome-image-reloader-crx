@@ -26,7 +26,7 @@ var parseUrl = function(url) {
         suffix += '?ImageReloaderRandomNum=' + getRandomNum();
     }
 
-    console.log(prefix + suffix + (prefix.length > 0 ? ')' : ''));
+    // console.log(prefix + suffix + (prefix.length > 0 ? ')' : ''));
     return prefix + suffix + (prefix.length > 0 ? ')' : '');
 };
 
@@ -35,12 +35,17 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         $('*').each(function() {
             var $t = $(this);
             if ($t.css('backgroundImage') && $t.css('backgroundImage') != 'none') {
-                var url = parseUrl($t.css('backgroundImage'));
+                var url = $t.css('backgroundImage');
+                if (url.indexOf('http') != 0 && url.indexOf('url(') != 0) {
+                    return;
+                }
+
+                url = parseUrl($t.css('backgroundImage'));
                 $t.css('backgroundImage', chrome.extension.getURL("icon128.png"));
                 setTimeout(function() {
                     $t.css('backgroundImage', url);
                 }, 10);
-            } else if (this.tagName == 'img') {
+            } else if (this.tagName.toLowerCase() == 'img') {
                 var url = parseUrl($t.attr('src'));
                 $t.attr('src', chrome.extension.getURL("icon128.png"));
                 setTimeout(function() {

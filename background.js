@@ -5,7 +5,7 @@ chrome.contextMenus.create({
         chrome.tabs.sendMessage(tab.id, {
             type: "page"
         }, function(response) {
-            console.log(response.msg);
+            // console.log(response.msg);
         });
     }
 });
@@ -16,7 +16,7 @@ chrome.contextMenus.create({
         chrome.tabs.sendMessage(tab.id, {
             type: "img"
         }, function(response) {
-            console.log(response.msg);
+            // console.log(response.msg);
         });
     }
 });
